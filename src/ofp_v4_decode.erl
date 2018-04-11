@@ -69,9 +69,8 @@ decode_match(Binary) ->
 decode_match_follwed_by_payload(Binary0) ->
     %% '1' stands for OXM Match Type
     <<1:16, NoPadLength:16, Binary1/binary>> =  Binary0,
-    %% PaddingLength computed according to the rule:
-    %% length(ofp_match) + PaddingLength = 0 mod 8
-    PaddingLength = 8  - (NoPadLength rem 8),
+    %% according to OF1.3 PaddingLength is exactly 2 all-zero bytes long
+    PaddingLength = 2,
     MatchFieldsLength = NoPadLength - (_HeaderSize = 4),
     <<MatchFields:MatchFieldsLength/binary, 0:PaddingLength/unit:8,
       Payload/bitstring>> = Binary1,
@@ -1000,10 +999,9 @@ decode_body(packet_in, Binary) ->
     BufferId = get_id(buffer_id, BufferIdInt),
     Reason = ofp_v4_enum:to_atom(packet_in_reason, ReasonInt),
     {Match, Payload} = decode_match_follwed_by_payload(Tail),
-    <<0:16, Data/bitstring>> = Payload,
     #ofp_packet_in{buffer_id = BufferId, total_len = TotalLen,
                    reason = Reason, table_id = TableId,
-                   cookie = Cookie, match = Match, data = Data};
+                   cookie = Cookie, match = Match, data = Payload};
 decode_body(flow_removed, Binary) ->
     MatchLength = size(Binary) - ?FLOW_REMOVED_SIZE + ?MATCH_SIZE
         + ?OFP_HEADER_SIZE,
