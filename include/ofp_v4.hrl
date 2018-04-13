@@ -657,7 +657,7 @@
                       | all.
 
 -record(ofp_bucket, {
-          weight = 1 :: integer(),
+          weight = 0 :: integer(),
           watch_port = 0 :: integer(),
           watch_group = 0 :: integer(),
           actions = [] :: [ofp_action()]
