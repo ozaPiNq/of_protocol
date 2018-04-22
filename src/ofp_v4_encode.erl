@@ -64,6 +64,10 @@ encode_struct(#ofp_field{class = Class, name = Field, has_mask = HasMask,
                 {ofp_v4_enum:to_int(oxm_ofb_match_fields, Field),
                  ofp_v4_map:tlv_length(Field),
                  ofp_v4_map:tlv_wire_length(Field)};
+            C when C =:= nxm_1 ->
+                {ofp_v4_enum:to_int(oxm_nxm_match_fields, Field),
+                 ofp_v4_map:tlv_length(Field),
+                 ofp_v4_map:tlv_wire_length(Field)};
             _ ->
                 Len = bit_size(Value),
                 {Field, Len, Len}

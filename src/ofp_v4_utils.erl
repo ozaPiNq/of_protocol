@@ -582,6 +582,9 @@ mk_action({push_mpls, EtherType}) ->
 mk_action({pop_mpls, EtherType}) ->
     #ofp_action_pop_mpls{ethertype = EtherType};
 
+mk_action({set_field, Class, Name, Value}) ->
+    #ofp_action_set_field{field = #ofp_field{class=Class, name=Name,value=Value}};
+
 mk_action({set_field, Name, Value}) ->
     #ofp_action_set_field{field = #ofp_field{name=Name,value=Value}};
 
