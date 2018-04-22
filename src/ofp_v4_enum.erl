@@ -293,6 +293,9 @@
                               {poc_queue_state_r, 54}
                               ]}).
 
+-enum({oxm_nxm_match_fields, [{tunnel_ipv4_src, 31},
+                              {tunnel_ipv4_dst, 32}]}).
+
 -enum({vlan_id, [none,
                  {present, 16#1000}]}).
 

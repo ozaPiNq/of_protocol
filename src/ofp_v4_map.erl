@@ -71,6 +71,8 @@ tlv_length(mpls_bos)       -> 1;
 tlv_length(pbb_isid)       -> 24;
 tlv_length(tunnel_id)      -> 64;
 tlv_length(ipv6_exthdr)    -> 9;
+tlv_length(tunnel_ipv4_src)-> 32;
+tlv_length(tunnel_ipv4_dst)-> 32;
 %% ---BEGIN--- LINC-OE
 tlv_length(odu_sigtype)    -> 8;
 tlv_length(odu_sigid)      -> 8;

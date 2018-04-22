@@ -342,6 +342,8 @@
                              | mpls_bos
                              | pbb_isid
                              | tunnel_id
+                             | tunnel_ipv4_src
+                             | tunnel_ipv4_dst
                              | ipv6_exthdr.
 
 -type ofp_field_type() :: openflow_basic_type().
