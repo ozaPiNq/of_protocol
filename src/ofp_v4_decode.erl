@@ -69,11 +69,15 @@ decode_match(Binary) ->
 decode_match_follwed_by_payload(Binary0) ->
     %% '1' stands for OXM Match Type
     <<1:16, NoPadLength:16, Binary1/binary>> =  Binary0,
-    %% according to OF1.3 PaddingLength is exactly 2 all-zero bytes long
-    PaddingLength = 2,
+    PaddingLength = case (NoPadLength rem 8) of
+        0 -> 2;
+        R -> 8 - R + 2
+    end,
     MatchFieldsLength = NoPadLength - (_HeaderSize = 4),
+
     <<MatchFields:MatchFieldsLength/binary, 0:PaddingLength/unit:8,
       Payload/bitstring>> = Binary1,
+
     Fields = decode_match_fields(MatchFields),
     {#ofp_match{fields = Fields}, Payload}.
 
@@ -103,12 +107,15 @@ decode_match_field(<<Header:4/bytes, Binary/bytes>>) ->
                 experimenter = ?INFOBLOX_EXPERIMENTER,
                 body = ExpField
                }, ExpRest};
-        C when C =:= openflow_basic orelse C =:= infoblox ->
+        C when C =:= openflow_basic orelse C =:= infoblox orelse C =:= nxm_1 ->
             HasMask = (HasMaskInt =:= 1),
             {Field, BitLength} =
                 case Class of
-                    C when C =:= openflow_basic orelse C =:= infoblox ->
+                    C when C =:= openflow_basic orelse C =:= infoblox->
                         F = ofp_v4_enum:to_atom(oxm_ofb_match_fields, FieldInt),
+                        {F, ofp_v4_map:tlv_length(F)};
+                    C when C =:= nxm_1->
+                        F = ofp_v4_enum:to_atom(oxm_nxm_match_fields, FieldInt),
                         {F, ofp_v4_map:tlv_length(F)};
                     _ ->
                         {FieldInt, Length * 8}
